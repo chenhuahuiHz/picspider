@@ -16,21 +16,22 @@ def get_html(url):
     return ""
 
 
-def get_img(html):
-    # print html
-    img_reg = r'http[^ ]+\.jpg'
-    p_img_reg = re.compile(img_reg)
-    url_list = re.findall(p_img_reg, html)
-    print url_list
-    index = 0
-    for one_url in url_list:
-        index += 1
-        dst_name = "imag%d.jpg" % index
-        print "downloading %s to %s" % (one_url, dst_name)
-        try:
-            urllib.urlretrieve(one_url, dst_name)
-        except Exception as err:
-            print "error: %s" % str(err)
+def get_img(html, pic_type_list):
+    for pic_type in pic_type_list:
+        # print html
+        img_reg = r'http[^ ]+\.'+pic_type
+        p_img_reg = re.compile(img_reg, re.I)
+        url_list = re.findall(p_img_reg, html)
+        # print url_list
+        index = 0
+        for one_url in url_list:
+            index += 1
+            dst_name = "imag%d.%s" % (index, pic_type)
+            print "downloading %s to %s" % (one_url, dst_name)
+            try:
+                urllib.urlretrieve(one_url, dst_name)
+            except Exception as err:
+                print "error: %s" % str(err)
 
 
 
@@ -46,5 +47,5 @@ if __name__ == "__main__":
     if len(options.url) < 1:
         sys.exit(0)
     else:
-        get_img(get_html(options.url))
+        get_img(get_html(options.url), ["jpg", "png", "gif"])
 
