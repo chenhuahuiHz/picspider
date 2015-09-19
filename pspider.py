@@ -3,12 +3,14 @@
 
 import sys
 import re
+import string
 import urllib
+import urllib2
 from optparse import OptionParser
 
 def get_html(url):
     try:
-        page = urllib.urlopen(url)
+        page = urllib2.urlopen(url)
         html = page.read()
         return html
     except IOError as error:
@@ -19,9 +21,10 @@ def get_html(url):
 def get_img(html, pic_type_list):
     for pic_type in pic_type_list:
         # print html
-        img_reg = r'http[^ ]+\.'+pic_type
+        img_reg = r'http[^", ]+\.'+pic_type
         p_img_reg = re.compile(img_reg, re.I)
         url_list = re.findall(p_img_reg, html)
+        url_list = list(set([string.replace(per_url, "\\", "") for per_url in url_list]))
         # print url_list
         index = 0
         for one_url in url_list:
